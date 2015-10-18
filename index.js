@@ -52,7 +52,7 @@ function Fileupload(options) {
 util.inherits(Fileupload, Resource);
 
 Fileupload.label = "File upload";
-Fileupload.events = ["get", "upload", "delete"];
+Fileupload.events = ["get", "upload", "delete", "beforeRequest", "afterCommit"];
 Fileupload.prototype.clientGeneration = true;
 Fileupload.basicDashboard = {
     settings: [
@@ -68,9 +68,20 @@ Fileupload.basicDashboard = {
  * Module methods
  */
 Fileupload.prototype.handle = function (ctx, next) {
+
+  if (this.events.beforeRequest) {
+    this.events.beforeRequest.run(ctx, {
+      url: ctx.url,
+      filename: ctx.url
+    }, function (err) {
+      if (err) return ctx.done(err);
+    });
+  }
     var req = ctx.req,
         self = this,
-        domain = {url: ctx.url};
+        domain = {
+          url: ctx.url
+        };
 
     if (req.method === "POST" || req.method === "PUT") {
         var form = new formidable.IncomingForm(),
@@ -86,6 +97,17 @@ Fileupload.prototype.handle = function (ctx, next) {
             remainingFile--;
             if (remainingFile === 0) {
                 debug("Response sent: ", resultFiles);
+                if (self.events.afterCommit) {
+                  self.events.afterCommit.run(ctx, {
+                    url: ctx.url,
+                    result: resultFiles,
+                  }, function (err) {
+                    if (err) return ctx.done(err);
+                    return ctx.done(null, resultFiles);
+                  });
+                } else {
+                  return ctx.done(null, resultFiles);
+                }
                 return ctx.done(null, resultFiles);
             }
         };
@@ -157,7 +179,11 @@ Fileupload.prototype.handle = function (ctx, next) {
                     file.name = md5(Date.now()) + '.' + file.name.split('.').pop();
                 }
                 if (self.events.upload) {
-                    self.events.upload.run(ctx, {url: ctx.url, filesize: file.size, filename: ctx.url}, function(err) {
+                    self.events.upload.run(ctx, {
+                      url: ctx.url,
+                      filesize: file.size,
+                      filename: ctx.url
+                    }, function(err) {
                         if (err) return processDone(err);
                         renameAndStore(file);
                     });
@@ -215,7 +241,9 @@ Fileupload.prototype.del = function(ctx, next) {
         fileId = ctx.url.split('/')[1],
         uploadDir = this.config.fullDirectory;
 
-    this.store.find({id: fileId}, function(err, result) {
+    this.store.find({
+      id: fileId
+    }, function(err, result) {
         if (err) return ctx.done(err);
         debug('found %j', err || result || 'none');
         if (typeof result !== 'undefined') {
@@ -223,18 +251,26 @@ Fileupload.prototype.del = function(ctx, next) {
             if (result.subdir !== null) {
                 subdir = result.subdir;
             }
-            self.store.remove({id: fileId}, function(err) {
+            self.store.remove({
+              id: fileId
+            }, function(err) {
                 if (err) return ctx.done(err);
                 //Fixed in case you don't upload to a subdir
                 if(subdir){
                     fs.unlink(path.join(uploadDir, subdir, result.filename), function(err) {
                         if (err) return ctx.done(err);
-                        ctx.done(null, {statusCode: 200, message: "File " + result.filename + " successfuly deleted"});
+                        ctx.done(null, {
+                          statusCode: 200,
+                          message: "File " + result.filename + " successfuly deleted"
+                        });
                     });
                 } else {
                     fs.unlink(path.join(uploadDir, result.filename), function(err) {
                         if (err) return ctx.done(err);
-                        ctx.done(null, {statusCode: 200, message: "File " + result.filename + " successfuly deleted"});
+                        ctx.done(null, {
+                          statusCode: 200,
+                          message: "File " + result.filename + " successfuly deleted"
+                        });
                     });
                 }
             });
