@@ -34,7 +34,7 @@ function Fileupload(options) {
 
     this.config = {
         directory: this.config.directory || 'upload',
-        fullDirectory: path.join(__dirname, publicDir, (this.config.directory || 'upload'))
+        fullDirectory: this.config.directory
     };
 
     if (this.name === this.config.directory) {
@@ -189,7 +189,7 @@ Fileupload.prototype.handle = function (ctx, next) {
 			else if (self.events.get) {
 				domain.data = result;
 				domain['this'] = result;
-				
+
 				self.events.get.run(ctx, domain, function(err) {
 					if (err) return ctx.done(err);
 					ctx.done(null, result);

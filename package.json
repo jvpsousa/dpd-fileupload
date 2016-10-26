@@ -2,7 +2,7 @@
   "name": "dpd-fileupload",
   "description": "File uploader for Deployd",
   "version": "0.0.16",
-  "author": "Nicolas Ritouet <nicolas@ritouet.com>",
+  "author": "Nicolas Ritouet <nicolas@ritouet.com>, João Vitor <jvpsousa@gmail.com>",
   "dependencies": {
     "debug": "2.2.0",
     "formidable": "1.0.17",
@@ -15,16 +15,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NicolasRitouet/dpd-fileupload.git"
+    "url": "https://github.com/jvpsousa/hubx-dpd-fileupload.git"
   },
   "engines": {
     "node": ">= 0.11"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/NicolasRitouet/dpd-fileupload/issues"
+    "url": "https://github.com/jvpsousa/hubx-dpd-fileupload/issues"
   },
-  "homepage": "https://github.com/NicolasRitouet/dpd-fileupload",
+  "homepage": "https://github.com/jvpsousa/hubx-dpd-fileupload",
   "main": "index.js",
   "scripts": {
     "test": "cd test && npm install && npm test"
