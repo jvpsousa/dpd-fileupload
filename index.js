@@ -104,7 +104,7 @@ Fileupload.prototype.handle = function (ctx, next) {
                     try {
                         fs.statSync(uploadDir).isDirectory();
                     } catch (er) {
-                        fs.mkdir(uploadDir);
+                        // fs.mkdir(uploadDir);
                     }
 
                 } else if (propertyName === 'uniqueFilename') {
