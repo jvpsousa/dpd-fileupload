@@ -45,7 +45,7 @@ function Fileupload(options) {
     try {
         fs.statSync(this.config.fullDirectory).isDirectory();
     } catch (er) {
-        fs.mkdir(this.config.fullDirectory);
+        // fs.mkdir(this.config.fullDirectory);
     }
 }
 
@@ -104,7 +104,7 @@ Fileupload.prototype.handle = function (ctx, next) {
                     try {
                         fs.statSync(uploadDir).isDirectory();
                     } catch (er) {
-                        // fs.mkdir(uploadDir);
+                        fs.mkdir(uploadDir);
                     }
 
                 } else if (propertyName === 'uniqueFilename') {
