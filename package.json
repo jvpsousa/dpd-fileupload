@@ -1,5 +1,5 @@
 {
-  "name": "dpd-fileupload",
+  "name": "hubx-dpd-fileupload",
   "description": "File uploader for Deployd",
   "version": "0.0.16",
   "author": "Nicolas Ritouet <nicolas@ritouet.com>, João Vitor <jvpsousa@gmail.com>",
